@@ -16,10 +16,12 @@ override_dh_install:
 		python$$pyvers setup.py install --install-layout=deb \
 			--root $(CURDIR)/debian/python-oslo.concurrency; \
 	done
+	mv $(CURDIR)/debian/python-oslo.concurrency/usr/bin/lockutils-wrapper $(CURDIR)/debian/python-oslo.concurrency/usr/bin/python2-lockutils-wrapper
 	set -e ; for pyvers in $(PYTHON3S); do \
 		python$$pyvers setup.py install --install-layout=deb \
 			--root $(CURDIR)/debian/python3-oslo.concurrency; \
 	done
+	mv $(CURDIR)/debian/python3-oslo.concurrency/usr/bin/lockutils-wrapper $(CURDIR)/debian/python3-oslo.concurrency/usr/bin/python3-lockutils-wrapper
 	rm -rf $(CURDIR)/debian/python*-oslo.concurrency/usr/lib/python*/dist-packages/*.pth
 
 override_dh_auto_test:
