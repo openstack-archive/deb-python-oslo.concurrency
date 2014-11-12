@@ -1,0 +1,5 @@
+python-oslo.concurrency (0.2.0-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #769287)
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 12 Nov 2014 20:49:34 +0800

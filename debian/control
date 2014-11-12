@@ -1,0 +1,95 @@
+Source: python-oslo.concurrency
+Section: python
+Priority: optional
+Maintainer: PKG OpenStack <openstack-devel@lists.alioth.debian.org>
+Uploaders: Thomas Goirand <zigo@debian.org>
+Build-Depends: debhelper (>= 9),
+               openstack-pkg-tools,
+               python-all (>= 2.6.6-3~),
+               python-pbr (>= 0.6),
+               python-setuptools,
+               python-sphinx,
+               python3-all,
+               python3-pbr (>= 0.6),
+               python3-setuptools
+Build-Depends-Indep: python-babel (>= 1.3),
+                     python-coverage (>= 3.6),
+                     python-eventlet (>= 0.15.2),
+                     python-fixtures (>= 0.3.14),
+                     python-iso8601 (>= 0.1.9),
+                     python-oslo.config (>= 1.4.0.0),
+                     python-oslo.i18n (>= 1.0.0),
+                     python-oslo.utils (>= 1.0.0),
+                     python-oslosphinx (>= 2.2.0.0),
+                     python-oslotest (>= 1.2.0),
+                     python-pbr (>= 0.6),
+                     python-posix-ipc,
+                     python-six (>= 1.7.0),
+                     python3-babel (>= 1.3),
+                     python3-coverage (>= 3.6),
+                     python3-fixtures (>= 0.3.14),
+                     python3-iso8601 (>= 0.1.9),
+                     python3-oslo.config (>= 1.4.0.0),
+                     python3-oslo.i18n (>= 1.0.0),
+                     python3-oslo.utils (>= 1.0.0),
+                     python3-oslotest,
+                     python3-pbr (>= 0.6),
+                     python3-posix-ipc,
+                     python3-six (>= 1.7.0)
+Standards-Version: 3.9.6
+Vcs-Browser: http://anonscm.debian.org/gitweb/?p=openstack/python-oslo.concurrency.git
+Vcs-Git: git://anonscm.debian.org/openstack/python-oslo.concurrency.git
+Homepage: https://github.com/openstack/oslo.concurrency
+
+Package: python-oslo.concurrency
+Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
+Depends: python-babel (>= 1.3),
+         python-fixtures (>= 0.3.14),
+         python-iso8601 (>= 0.1.9),
+         python-oslo.config (>= 1.4.0.0),
+         python-oslo.i18n (>= 1.0.0),
+         python-oslo.utils (>= 1.0.0),
+         python-pbr (>= 0.6),
+         python-posix-ipc,
+         python-six (>= 1.7.0),
+         ${misc:Depends},
+         ${python:Depends}
+Suggests: python-oslo.concurrency-doc
+Description: concurrency and locks for OpenStack projects - Python 2.x
+ The oslo.concurrency library provides solutions for managing concurrency and
+ locks within OpenStack projects.
+ .
+ This package contains the Python 2.x module.
+
+Package: python3-oslo.concurrency
+Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
+Depends: python3-babel (>= 1.3),
+         python3-fixtures (>= 0.3.14),
+         python3-iso8601 (>= 0.1.9),
+         python3-oslo.config (>= 1.4.0.0),
+         python3-oslo.i18n (>= 1.0.0),
+         python3-oslo.utils (>= 1.0.0),
+         python3-pbr (>= 0.6),
+         python3-posix-ipc,
+         python3-six (>= 1.7.0),
+         ${misc:Depends},
+         ${python3:Depends}
+Suggests: python-oslo.concurrency-doc
+Description: oslo.concurrency library - Python 3.x
+ The oslo.concurrency library provides solutions for managing concurrency and
+ locks within OpenStack projects.
+ .
+ This package contains the Python 3.x module.
+
+Package: python-oslo.concurrency-doc
+Section: doc
+Architecture: all
+Pre-Depends: dpkg (>= 1.15.6~)
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Description: oslo.concurrency library - doc
+ The oslo.concurrency library provides solutions for managing concurrency and
+ locks within OpenStack projects.
+ .
+ This package contains the documentation.
