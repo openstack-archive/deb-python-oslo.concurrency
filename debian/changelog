@@ -1,4 +1,4 @@
-python-oslo.concurrency (0.2.0-1) unstable; urgency=medium
+python-oslo.concurrency (0.2.0-1) experimental; urgency=medium
 
   * Initial release. (Closes: #769287)
 
