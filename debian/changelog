@@ -1,6 +1,7 @@
 python-oslo.concurrency (0.3.0-1) UNRELEASED; urgency=medium
 
   * New upstream release.
+  * Added python-retrying as (build-)depends.
 
  -- Thomas Goirand <zigo@debian.org>  Tue, 23 Dec 2014 10:44:01 +0800
 
