@@ -29,7 +29,7 @@ from oslo.utils import importutils
 from oslo.utils import strutils
 import six
 
-from oslo.concurrency._i18n import _
+from oslo_concurrency._i18n import _
 
 
 # NOTE(bnemec): eventlet doesn't monkey patch subprocess, so we need to
@@ -181,7 +181,7 @@ def execute(*cmd, **kwargs):
                           'specify a root helper.'))
         cmd = shlex.split(root_helper) + list(cmd)
 
-    cmd = map(str, cmd)
+    cmd = [str(c) for c in cmd]
     sanitized_cmd = strutils.mask_password(' '.join(cmd))
 
     while attempts > 0:
