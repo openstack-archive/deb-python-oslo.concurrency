@@ -212,7 +212,7 @@ def execute(*cmd, **kwargs):
             obj.stdin.close()  # pylint: disable=E1101
             _returncode = obj.returncode  # pylint: disable=E1101
             end_time = time.time() - start_time
-            LOG.log(loglevel, 'CMD "%s" returned: %s in %ss' %
+            LOG.log(loglevel, 'CMD "%s" returned: %s in %0.3fs' %
                     (sanitized_cmd, _returncode, end_time))
             if not ignore_exit_code and _returncode not in check_exit_code:
                 (stdout, stderr) = result
