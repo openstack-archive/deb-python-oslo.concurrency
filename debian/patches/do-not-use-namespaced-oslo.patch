@@ -15,3 +15,16 @@ Last-Update: 2015-02-08
  
  LOG = logging.getLogger(__name__)
  
+--- python-oslo.concurrency-1.4.1.orig/oslo_concurrency/processutils.py	2015-02-08 11:49:09.000000000 +0100
++++ python-oslo.concurrency-1.4.1/oslo_concurrency/processutils.py	2015-02-08 11:49:15.000000000 +0100
+@@ -25,8 +25,8 @@
+ import signal
+ import time
+ 
+-from oslo.utils import importutils
+-from oslo.utils import strutils
++from oslo_utils import importutils
++from oslo_utils import strutils
+ import six
+ 
+ from oslo_concurrency._i18n import _
