@@ -28,17 +28,3 @@ Last-Update: 2015-02-08
  import six
  
  from oslo_concurrency._i18n import _
---- python-oslo.concurrency-1.4.1.orig/tests/test_warning.py
-+++ python-oslo.concurrency-1.4.1/tests/test_warning.py
-@@ -35,7 +35,10 @@ class DeprecationWarningTest(test_base.BaseTestCase):
-         with warnings.catch_warnings(record=True) as warning_msgs:
-             warnings.resetwarnings()
-             warnings.simplefilter('always', DeprecationWarning)
--            import oslo.concurrency
-+            try:
-+                import oslo.concurrency
-+            except:
-+                pass
- 
-             # Use a separate function to get the stack level correct
-             # so we know the message points back to this file. This
