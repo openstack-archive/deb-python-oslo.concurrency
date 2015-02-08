@@ -1,0 +1,17 @@
+Description: Do not use namespaced oslo
+ Package fails unit tests without this patch.
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2015-02-08
+
+--- python-oslo.concurrency-1.4.1.orig/oslo_concurrency/openstack/common/fileutils.py
++++ python-oslo.concurrency-1.4.1/oslo_concurrency/openstack/common/fileutils.py
+@@ -19,7 +19,7 @@ import logging
+ import os
+ import tempfile
+ 
+-from oslo.utils import excutils
++from oslo_utils import excutils
+ 
+ LOG = logging.getLogger(__name__)
+ 
