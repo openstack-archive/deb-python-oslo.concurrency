@@ -1,0 +1,17 @@
+Description: Install missing files
+ setup.py install doesn't install all...
+Author: Thomas Goirand <zigo@debian.org>
+Forwarded: no
+Last-Update: 2015-02-09
+
+--- python-oslo.concurrency-1.4.1.orig/MANIFEST.in
++++ python-oslo.concurrency-1.4.1/MANIFEST.in
+@@ -3,4 +3,7 @@ include ChangeLog
+ exclude .gitignore
+ exclude .gitreview
+ 
++recursive-include oslo_concurrency *.py
++recursive-include oslo/concurrency *.py
++
+ global-exclude *.pyc
+\ No newline at end of file
