@@ -25,8 +25,8 @@ import shlex
 import signal
 import time
 
-from oslo.utils import importutils
-from oslo.utils import strutils
+from oslo_utils import importutils
+from oslo_utils import strutils
 import six
 
 from oslo_concurrency._i18n import _
@@ -103,6 +103,8 @@ def execute(*cmd, **kwargs):
 
     :param cmd:             Passed to subprocess.Popen.
     :type cmd:              string
+    :param cwd:             Set the current working directory
+    :type cwd:              string
     :param process_input:   Send to opened process.
     :type process_input:    string
     :param env_variables:   Environment variables and their values that
@@ -149,6 +151,7 @@ def execute(*cmd, **kwargs):
     :raises:                :class:`OSError`
     """
 
+    cwd = kwargs.pop('cwd', None)
     process_input = kwargs.pop('process_input', None)
     env_variables = kwargs.pop('env_variables', None)
     check_exit_code = kwargs.pop('check_exit_code', [0])
@@ -179,7 +182,12 @@ def execute(*cmd, **kwargs):
             raise NoRootWrapSpecified(
                 message=_('Command requested root, but did not '
                           'specify a root helper.'))
-        cmd = shlex.split(root_helper) + list(cmd)
+        if shell:
+            # root helper has to be injected into the command string
+            cmd = [' '.join((root_helper, cmd[0]))] + list(cmd[1:])
+        else:
+            # root helper has to be tokenized into argument list
+            cmd = shlex.split(root_helper) + list(cmd)
 
     cmd = [str(c) for c in cmd]
     sanitized_cmd = strutils.mask_password(' '.join(cmd))
@@ -205,6 +213,7 @@ def execute(*cmd, **kwargs):
                                    close_fds=close_fds,
                                    preexec_fn=preexec_fn,
                                    shell=shell,
+                                   cwd=cwd,
                                    env=env_variables)
 
             result = obj.communicate(process_input)
