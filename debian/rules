@@ -22,6 +22,8 @@ override_dh_install:
 			--root $(CURDIR)/debian/python3-oslo.concurrency; \
 	done
 	cp -r oslo_concurrency/openstack $(CURDIR)/debian/python3-oslo.concurrency/usr/lib/python3/dist-packages/oslo_concurrency ; \
+	mv $(CURDIR)/debian/python-oslo.concurrency/usr/bin/lockutils-wrapper $(CURDIR)/debian/python-oslo.concurrency/usr/bin/python2-lockutils-wrapper
+	mv $(CURDIR)/debian/python3-oslo.concurrency/usr/bin/lockutils-wrapper $(CURDIR)/debian/python3-oslo.concurrency/usr/bin/python3-lockutils-wrapper
 	rm -rf $(CURDIR)/debian/python*-oslo.concurrency/usr/lib/python*/dist-packages/*.pth
 
 override_dh_auto_test:

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ] ; then
+	update-alternatives --remove lockutils-wrapper /usr/bin/python3-lockutils-wrapper
+fi
+
+#DEBHELPER#
+
+exit 0
+
