@@ -1,79 +1,25 @@
 # English (United Kingdom) translations for oslo.concurrency.
-# Copyright (C) 2014 ORGANIZATION
+# Copyright (C) 2015 ORGANIZATION
 # This file is distributed under the same license as the oslo.concurrency
 # project.
 #
 # Translators:
-# Andi Chandler <andi@gowling.com>, 2014
+# Andi Chandler <andi@gowling.com>, 2014-2015
 msgid ""
 msgstr ""
 "Project-Id-Version:  oslo.concurrency\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2014-10-29 06:10+0000\n"
-"PO-Revision-Date: 2014-10-28 20:48+0000\n"
-"Last-Translator: openstackjenkins <jenkins@openstack.org>\n"
-"Language-Team: English (United Kingdom) "
-"(http://www.transifex.com/projects/p/osloconcurrency/language/en_GB/)\n"
+"POT-Creation-Date: 2015-05-28 06:05+0000\n"
+"PO-Revision-Date: 2015-03-24 01:19+0000\n"
+"Last-Translator: Andi Chandler <andi@gowling.com>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/projects/p/"
+"osloconcurrency/language/en_GB/)\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 1.3\n"
 
-#: oslo/concurrency/lockutils.py:120
-#, python-format
-msgid "Unable to acquire lock on `%(filename)s` due to %(exception)s"
-msgstr "Unable to acquire lock on `%(filename)s` due to %(exception)s"
-
-#: oslo/concurrency/lockutils.py:134
-msgid "Unable to release an unacquired lock"
-msgstr ""
-
-#: oslo/concurrency/lockutils.py:385
-msgid ""
-"Calling lockutils directly is no longer supported.  Please use the "
-"lockutils-wrapper console script instead."
-msgstr ""
-
-#: oslo/concurrency/processutils.py:69
-msgid "Unexpected error while running command."
-msgstr "Unexpected error while running command."
-
-#: oslo/concurrency/processutils.py:72
-#, python-format
-msgid ""
-"%(description)s\n"
-"Command: %(cmd)s\n"
-"Exit code: %(exit_code)s\n"
-"Stdout: %(stdout)r\n"
-"Stderr: %(stderr)r"
-msgstr ""
-"%(description)s\n"
-"Command: %(cmd)s\n"
-"Exit code: %(exit_code)s\n"
-"Stdout: %(stdout)r\n"
-"Stderr: %(stderr)r"
-
-#: oslo/concurrency/processutils.py:171
-#, python-format
-msgid "Got unknown keyword args: %r"
-msgstr "Got unknown keyword args: %r"
-
-#: oslo/concurrency/processutils.py:174
-#, python-format
-msgid "Got invalid arg log_errors: %r"
-msgstr ""
-
-#: oslo/concurrency/processutils.py:180
-msgid "Command requested root, but did not specify a root helper."
-msgstr "Command requested root, but did not specify a root helper."
-
-#: oslo/concurrency/processutils.py:191
-#, python-format
-msgid "Running cmd (subprocess): %s"
-msgstr "Running cmd (subprocess): %s"
-
-#: oslo/concurrency/processutils.py:233
 #, python-format
 msgid ""
 "%(desc)r\n"
@@ -82,30 +28,78 @@ msgid ""
 "stdout: %(stdout)r\n"
 "stderr: %(stderr)r"
 msgstr ""
+"%(desc)r\n"
+"command: %(cmd)r\n"
+"exit code: %(code)r\n"
+"stdout: %(stdout)r\n"
+"stderr: %(stderr)r"
 
-#: oslo/concurrency/processutils.py:242
+#, python-format
+msgid ""
+"%(description)s\n"
+"Command: %(cmd)s\n"
+"Exit code: %(exit_code)s\n"
+"Stdout: %(stdout)r\n"
+"Stderr: %(stderr)r"
+msgstr ""
+"%(description)s\n"
+"Command: %(cmd)s\n"
+"Exit code: %(exit_code)s\n"
+"Stdout: %(stdout)r\n"
+"Stderr: %(stderr)r"
+
+#, python-format
+msgid "%r failed. Not Retrying."
+msgstr "%r failed. Not Retrying."
+
+#, python-format
+msgid "%r failed. Retrying."
+msgstr "%r failed. Retrying."
+
+msgid ""
+"Calling lockutils directly is no longer supported.  Please use the lockutils-"
+"wrapper console script instead."
+msgstr ""
+"Calling lockutils directly is no longer supported.  Please use the lockutils-"
+"wrapper console script instead."
+
+msgid "Command requested root, but did not specify a root helper."
+msgstr "Command requested root, but did not specify a root helper."
+
+msgid "Environment not supported over SSH"
+msgstr "Environment not supported over SSH"
+
 #, python-format
 msgid ""
 "Got an OSError\n"
 "command: %(cmd)r\n"
 "errno: %(errno)r"
 msgstr ""
+"Got an OSError\n"
+"command: %(cmd)r\n"
+"errno: %(errno)r"
 
-#: oslo/concurrency/processutils.py:248
 #, python-format
-msgid "%r failed. Not Retrying."
-msgstr ""
+msgid "Got invalid arg log_errors: %r"
+msgstr "Got invalid arg log_errors: %r"
 
-#: oslo/concurrency/processutils.py:252
 #, python-format
-msgid "%r failed. Retrying."
-msgstr "%r failed. Retrying."
+msgid "Got unknown keyword args: %r"
+msgstr "Got unknown keyword args: %r"
 
-#: oslo/concurrency/processutils.py:299
-msgid "Environment not supported over SSH"
-msgstr "Environment not supported over SSH"
+#, python-format
+msgid "Running cmd (subprocess): %s"
+msgstr "Running cmd (subprocess): %s"
 
-#: oslo/concurrency/processutils.py:303
+#, python-format
+msgid "Unable to acquire lock on `%(filename)s` due to %(exception)s"
+msgstr "Unable to acquire lock on `%(filename)s` due to %(exception)s"
+
+msgid "Unable to release an unacquired lock"
+msgstr "Unable to release an unacquired lock"
+
+msgid "Unexpected error while running command."
+msgstr "Unexpected error while running command."
+
 msgid "process_input not supported over SSH"
 msgstr "process_input not supported over SSH"
-
