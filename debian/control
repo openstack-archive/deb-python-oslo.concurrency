@@ -64,6 +64,8 @@ Depends: python-babel,
          ${misc:Depends},
          ${python:Depends},
 Suggests: python-oslo.concurrency-doc,
+Breaks: python-oslo-concurrency (<< 1.10.0-1~),
+Replaces: python-oslo-concurrency (<< 1.10.0-1~),
 Description: concurrency and locks for OpenStack projects - Python 2.x
  The oslo.concurrency library provides solutions for managing concurrency and
  locks within OpenStack projects.
@@ -86,6 +88,8 @@ Depends: python3-babel,
          ${misc:Depends},
          ${python3:Depends},
 Suggests: python-oslo.concurrency-doc,
+Breaks: python3-oslo-concurrency (<< 1.10.0-1~),
+Replaces: python3-oslo-concurrency (<< 1.10.0-1~),
 Description: oslo.concurrency library - Python 3.x
  The oslo.concurrency library provides solutions for managing concurrency and
  locks within OpenStack projects.
@@ -102,3 +106,27 @@ Description: oslo.concurrency library - doc
  locks within OpenStack projects.
  .
  This package contains the documentation.
+
+Package: python-oslo-concurrency
+Section: oldlibs
+Architecture: all
+Depends: python-oslo.concurrency,
+         ${misc:Depends},
+Description: transitional dummy package for python-oslo-concurrency.
+ This transtional package is safe to remove.
+
+Package: python-oslo-concurrency-doc
+Section: oldlibs
+Architecture: all
+Depends: python-oslo.concurrency-doc,
+         ${misc:Depends},
+Description: transitional dummy package for python-oslo-concurrency-doc.
+ This transtional package is safe to remove.
+
+Package: python3-oslo-concurrency
+Section: oldlibs
+Architecture: all
+Depends: python3-oslo.concurrency,
+         ${misc:Depends},
+Description: transitional dummy package for python3-oslo-concurrency.
+ This transtional package is safe to remove.
