@@ -113,7 +113,7 @@ Architecture: all
 Depends: python-oslo.concurrency,
          ${misc:Depends},
 Description: transitional dummy package for python-oslo-concurrency.
- This transtional package is safe to remove.
+ This transitional package is safe to remove.
 
 Package: python-oslo-concurrency-doc
 Section: oldlibs
@@ -121,7 +121,7 @@ Architecture: all
 Depends: python-oslo.concurrency-doc,
          ${misc:Depends},
 Description: transitional dummy package for python-oslo-concurrency-doc.
- This transtional package is safe to remove.
+ This transitional package is safe to remove.
 
 Package: python3-oslo-concurrency
 Section: oldlibs
@@ -129,4 +129,4 @@ Architecture: all
 Depends: python3-oslo.concurrency,
          ${misc:Depends},
 Description: transitional dummy package for python3-oslo-concurrency.
- This transtional package is safe to remove.
+ This transitional package is safe to remove.
