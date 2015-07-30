@@ -5,6 +5,7 @@ python-oslo.concurrency (2.3.0-1) experimental; urgency=medium
 
   [ Thomas Goirand ]
   * New upstream release.
+  * Fixed build-depends for this release.
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 29 Jul 2015 23:57:32 +0000
 
