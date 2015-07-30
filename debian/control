@@ -111,6 +111,7 @@ Description: oslo.concurrency library - doc
 
 Package: python-oslo-concurrency
 Section: oldlibs
+Priority: extra
 Architecture: all
 Depends: python-oslo.concurrency,
          ${misc:Depends},
@@ -119,6 +120,7 @@ Description: transitional dummy package for python-oslo-concurrency.
 
 Package: python-oslo-concurrency-doc
 Section: oldlibs
+Priority: extra
 Architecture: all
 Depends: python-oslo.concurrency-doc,
          ${misc:Depends},
@@ -127,6 +129,7 @@ Description: transitional dummy package for python-oslo-concurrency-doc.
 
 Package: python3-oslo-concurrency
 Section: oldlibs
+Priority: extra
 Architecture: all
 Depends: python3-oslo.concurrency,
          ${misc:Depends},
