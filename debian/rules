@@ -15,7 +15,6 @@ override_dh_install:
 	set -e ; for pyvers in $(PYTHONS); do \
 		python$$pyvers setup.py install --install-layout=deb \
 			--root $(CURDIR)/debian/python-oslo.concurrency; \
-		cp -r oslo_concurrency/openstack $(CURDIR)/debian/python-oslo.concurrency/usr/lib/python$$pyvers/dist-packages/oslo_concurrency ; \
 	done
 	set -e ; for pyvers in $(PYTHON3S); do \
 		python$$pyvers setup.py install --install-layout=deb \
