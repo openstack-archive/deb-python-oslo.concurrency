@@ -20,6 +20,7 @@ import logging
 import multiprocessing
 import os
 import stat
+import subprocess
 import tempfile
 
 import fixtures
@@ -59,6 +60,53 @@ class UtilsTest(test_base.BaseTestCase):
     def test_get_worker_count_cpu_count_not_implemented(self,
                                                         mock_cpu_count):
         self.assertEqual(1, processutils.get_worker_count())
+
+    def test_execute_with_callback(self):
+        on_execute_callback = mock.Mock()
+        on_completion_callback = mock.Mock()
+        processutils.execute("/bin/true")
+        self.assertEqual(0, on_execute_callback.call_count)
+        self.assertEqual(0, on_completion_callback.call_count)
+
+        processutils.execute("/bin/true", on_execute=on_execute_callback,
+                             on_completion=on_completion_callback)
+        self.assertEqual(1, on_execute_callback.call_count)
+        self.assertEqual(1, on_completion_callback.call_count)
+
+    @mock.patch.object(subprocess.Popen, "communicate")
+    def test_execute_with_callback_and_errors(self, mock_comm):
+        on_execute_callback = mock.Mock()
+        on_completion_callback = mock.Mock()
+
+        def fake_communicate(*args):
+            raise IOError("Broken pipe")
+
+        mock_comm.side_effect = fake_communicate
+
+        self.assertRaises(IOError,
+                          processutils.execute,
+                          "/bin/true",
+                          on_execute=on_execute_callback,
+                          on_completion=on_completion_callback)
+        self.assertEqual(1, on_execute_callback.call_count)
+        self.assertEqual(1, on_completion_callback.call_count)
+
+    def test_execute_with_preexec_fn(self):
+        # NOTE(dims): preexec_fn is set to a callable object, this object
+        # will be called in the child process just before the child is
+        # executed. So we cannot pass share variables etc, simplest is to
+        # check if a specific exception is thrown which can be caught here.
+        def preexec_fn():
+            raise processutils.InvalidArgumentError()
+
+        processutils.execute("/bin/true")
+
+        expected_exception = (processutils.InvalidArgumentError if six.PY2
+                              else subprocess.SubprocessError)
+        self.assertRaises(expected_exception,
+                          processutils.execute,
+                          "/bin/true",
+                          preexec_fn=preexec_fn)
 
 
 class ProcessExecutionErrorTest(test_base.BaseTestCase):

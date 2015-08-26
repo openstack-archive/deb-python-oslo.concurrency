@@ -17,6 +17,7 @@
 System-level utilities and helper functions.
 """
 
+import functools
 import logging
 import multiprocessing
 import os
@@ -86,10 +87,12 @@ class NoRootWrapSpecified(Exception):
         super(NoRootWrapSpecified, self).__init__(message)
 
 
-def _subprocess_setup():
+def _subprocess_setup(on_preexec_fn):
     # Python installs a SIGPIPE handler by default. This is usually not what
     # non-Python subprocesses expect.
     signal.signal(signal.SIGPIPE, signal.SIG_DFL)
+    if on_preexec_fn:
+        on_preexec_fn()
 
 
 LOG_ALL_ERRORS = 1
@@ -144,6 +147,24 @@ def execute(*cmd, **kwargs):
                             last attempt, and LOG_ALL_ERRORS requires
                             logging on each occurence of an error.
     :type log_errors:       integer.
+    :param on_execute:      This function will be called upon process creation
+                            with the object as a argument.  The Purpose of this
+                            is to allow the caller of `processutils.execute` to
+                            track process creation asynchronously.
+    :type on_execute:       function(:class:`subprocess.Popen`)
+    :param on_completion:   This function will be called upon process
+                            completion with the object as a argument.  The
+                            Purpose of this is to allow the caller of
+                            `processutils.execute` to track process completion
+                            asynchronously.
+    :type on_completion:    function(:class:`subprocess.Popen`)
+    :param preexec_fn:      This function will be called
+                            in the child process just before the child
+                            is executed. WARNING: On windows, we silently
+                            drop this preexec_fn as it is not supported by
+                            subprocess.Popen on windows (throws a
+                            ValueError)
+    :type preexec_fn:       function()
     :returns:               (stdout, stderr) from process execution
     :raises:                :class:`UnknownArgumentError` on
                             receiving unknown arguments
@@ -163,6 +184,9 @@ def execute(*cmd, **kwargs):
     shell = kwargs.pop('shell', False)
     loglevel = kwargs.pop('loglevel', logging.DEBUG)
     log_errors = kwargs.pop('log_errors', None)
+    on_execute = kwargs.pop('on_execute', None)
+    on_completion = kwargs.pop('on_completion', None)
+    preexec_fn = kwargs.pop('preexec_fn', None)
 
     if isinstance(check_exit_code, bool):
         ignore_exit_code = not check_exit_code
@@ -200,10 +224,11 @@ def execute(*cmd, **kwargs):
             _PIPE = subprocess.PIPE  # pylint: disable=E1101
 
             if os.name == 'nt':
-                preexec_fn = None
+                on_preexec_fn = None
                 close_fds = False
             else:
-                preexec_fn = _subprocess_setup
+                on_preexec_fn = functools.partial(_subprocess_setup,
+                                                  preexec_fn)
                 close_fds = True
 
             obj = subprocess.Popen(cmd,
@@ -211,18 +236,26 @@ def execute(*cmd, **kwargs):
                                    stdout=_PIPE,
                                    stderr=_PIPE,
                                    close_fds=close_fds,
-                                   preexec_fn=preexec_fn,
+                                   preexec_fn=on_preexec_fn,
                                    shell=shell,
                                    cwd=cwd,
                                    env=env_variables)
 
-            result = obj.communicate(process_input)
+            if on_execute:
+                on_execute(obj)
 
-            obj.stdin.close()  # pylint: disable=E1101
-            _returncode = obj.returncode  # pylint: disable=E1101
-            end_time = time.time() - start_time
-            LOG.log(loglevel, 'CMD "%s" returned: %s in %0.3fs' %
-                    (sanitized_cmd, _returncode, end_time))
+            try:
+                result = obj.communicate(process_input)
+
+                obj.stdin.close()  # pylint: disable=E1101
+                _returncode = obj.returncode  # pylint: disable=E1101
+                end_time = time.time() - start_time
+                LOG.log(loglevel, 'CMD "%s" returned: %s in %0.3fs',
+                        sanitized_cmd, _returncode, end_time)
+            finally:
+                if on_completion:
+                    on_completion(obj)
+
             if not ignore_exit_code and _returncode not in check_exit_code:
                 (stdout, stderr) = result
                 sanitized_stdout = strutils.mask_password(stdout)
