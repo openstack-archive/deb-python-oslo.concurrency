@@ -2,6 +2,8 @@ python-oslo.concurrency (2.6.0-1) experimental; urgency=medium
 
   * New upstream release.
   * Fixed (build-)depends for this release.
+  * Don't test with Python 3.5 for now (only 3.4) as there's unit test
+    failures.
 
  -- Thomas Goirand <zigo@debian.org>  Sun, 27 Sep 2015 17:12:06 +0200
 
