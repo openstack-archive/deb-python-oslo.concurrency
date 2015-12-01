@@ -11,8 +11,8 @@ external processes.
 
    installation
    usage
+   opts
    contributing
-   history
 
 API Documentation
 =================
@@ -21,6 +21,14 @@ API Documentation
    :maxdepth: 1
 
    api/index
+
+Release Notes
+=============
+
+.. toctree::
+   :maxdepth: 1
+
+   history
 
 Indices and tables
 ==================

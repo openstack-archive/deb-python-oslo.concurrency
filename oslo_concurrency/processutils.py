@@ -26,6 +26,7 @@ import shlex
 import signal
 import time
 
+import enum
 from oslo_utils import importutils
 from oslo_utils import strutils
 from oslo_utils import timeutils
@@ -96,8 +97,27 @@ def _subprocess_setup(on_preexec_fn):
         on_preexec_fn()
 
 
-LOG_ALL_ERRORS = 1
-LOG_FINAL_ERROR = 2
+@enum.unique
+class LogErrors(enum.IntEnum):
+    """Enumerations that affect if stdout and stderr are logged on error.
+
+    .. versionadded:: 2.7
+    """
+
+    #: No logging on errors.
+    DEFAULT = 0
+
+    #: Log an error on **each** occurence of an error.
+    ALL = 1
+
+    #: Log an error on the last attempt that errored **only**.
+    FINAL = 2
+
+
+# Retain these aliases for a number of releases...
+LOG_ALL_ERRORS = LogErrors.ALL
+LOG_FINAL_ERROR = LogErrors.FINAL
+LOG_DEFAULT_ERROR = LogErrors.DEFAULT
 
 
 def execute(*cmd, **kwargs):
@@ -137,17 +157,16 @@ def execute(*cmd, **kwargs):
     :param loglevel:        log level for execute commands.
     :type loglevel:         int.  (Should be logging.DEBUG or logging.INFO)
     :param log_errors:      Should stdout and stderr be logged on error?
-                            Possible values are None=default,
-                            LOG_FINAL_ERROR, or LOG_ALL_ERRORS. None
-                            implies no logging on errors. The values
-                            LOG_FINAL_ERROR and LOG_ALL_ERRORS are
-                            relevant when multiple attempts of command
-                            execution are requested using the
-                            'attempts' parameter. If LOG_FINAL_ERROR
-                            is specified then only log an error on the
-                            last attempt, and LOG_ALL_ERRORS requires
-                            logging on each occurence of an error.
-    :type log_errors:       integer.
+                            Possible values are
+                            :py:attr:`~.LogErrors.DEFAULT`,
+                            :py:attr:`~.LogErrors.FINAL`, or
+                            :py:attr:`~.LogErrors.ALL`. Note that the
+                            values :py:attr:`~.LogErrors.FINAL` and
+                            :py:attr:`~.LogErrors.ALL`
+                            are **only** relevant when multiple attempts of
+                            command execution are requested using the
+                            ``attempts`` parameter.
+    :type log_errors:       :py:class:`~.LogErrors`
     :param binary:          On Python 3, return stdout and stderr as bytes if
                             binary is True, as Unicode otherwise.
     :type binary:           boolean
@@ -174,6 +193,20 @@ def execute(*cmd, **kwargs):
                             receiving unknown arguments
     :raises:                :class:`ProcessExecutionError`
     :raises:                :class:`OSError`
+
+    .. versionchanged:: 1.5
+       Added *cwd* optional parameter.
+
+    .. versionchanged:: 1.9
+       Added *binary* optional parameter. On Python 3, *stdout* and *stdout*
+       are now returned as Unicode strings by default, or bytes if *binary* is
+       true.
+
+    .. versionchanged:: 2.1
+       Added *on_execute* and *on_completion* optional parameters.
+
+    .. versionchanged:: 2.3
+       Added *preexec_fn* optional parameter.
     """
 
     cwd = kwargs.pop('cwd', None)
@@ -188,6 +221,8 @@ def execute(*cmd, **kwargs):
     shell = kwargs.pop('shell', False)
     loglevel = kwargs.pop('loglevel', logging.DEBUG)
     log_errors = kwargs.pop('log_errors', None)
+    if log_errors is None:
+        log_errors = LogErrors.DEFAULT
     binary = kwargs.pop('binary', False)
     on_execute = kwargs.pop('on_execute', None)
     on_completion = kwargs.pop('on_completion', None)
@@ -202,7 +237,9 @@ def execute(*cmd, **kwargs):
     if kwargs:
         raise UnknownArgumentError(_('Got unknown keyword args: %r') % kwargs)
 
-    if log_errors not in [None, LOG_ALL_ERRORS, LOG_FINAL_ERROR]:
+    if isinstance(log_errors, six.integer_types):
+        log_errors = LogErrors(log_errors)
+    if not isinstance(log_errors, LogErrors):
         raise InvalidArgumentError(_('Got invalid arg log_errors: %r') %
                                    log_errors)
 
@@ -353,6 +390,11 @@ def trycmd(*args, **kwargs):
 def ssh_execute(ssh, cmd, process_input=None,
                 addl_env=None, check_exit_code=True,
                 binary=False):
+    """Run a command through SSH.
+
+    .. versionchanged:: 1.9
+       Added *binary* optional parameter.
+    """
     sanitized_cmd = strutils.mask_password(cmd)
     LOG.debug('Running cmd (SSH): %s', sanitized_cmd)
     if addl_env:
