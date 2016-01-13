@@ -2,6 +2,7 @@ python-oslo.concurrency (3.2.0-1) experimental; urgency=medium
 
   * New upstream release.
   * Also run tests in Python 3.5.
+  * Removed all patches.
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 13 Jan 2016 01:36:33 +0000
 
