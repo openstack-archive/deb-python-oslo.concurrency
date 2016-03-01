@@ -24,6 +24,7 @@ import os
 import random
 import shlex
 import signal
+import sys
 import time
 
 import enum
@@ -62,26 +63,33 @@ class UnknownArgumentError(Exception):
 class ProcessExecutionError(Exception):
     def __init__(self, stdout=None, stderr=None, exit_code=None, cmd=None,
                  description=None):
+        super(ProcessExecutionError, self).__init__(
+            stdout, stderr, exit_code, cmd, description)
         self.exit_code = exit_code
         self.stderr = stderr
         self.stdout = stdout
         self.cmd = cmd
         self.description = description
 
+    def __str__(self):
+        description = self.description
         if description is None:
             description = _("Unexpected error while running command.")
+
+        exit_code = self.exit_code
         if exit_code is None:
             exit_code = '-'
+
         message = _('%(description)s\n'
                     'Command: %(cmd)s\n'
                     'Exit code: %(exit_code)s\n'
                     'Stdout: %(stdout)r\n'
                     'Stderr: %(stderr)r') % {'description': description,
-                                             'cmd': cmd,
+                                             'cmd': self.cmd,
                                              'exit_code': exit_code,
-                                             'stdout': stdout,
-                                             'stderr': stderr}
-        super(ProcessExecutionError, self).__init__(message)
+                                             'stdout': self.stdout,
+                                             'stderr': self.stderr}
+        return message
 
 
 class NoRootWrapSpecified(Exception):
@@ -118,6 +126,38 @@ class LogErrors(enum.IntEnum):
 LOG_ALL_ERRORS = LogErrors.ALL
 LOG_FINAL_ERROR = LogErrors.FINAL
 LOG_DEFAULT_ERROR = LogErrors.DEFAULT
+
+
+class ProcessLimits(object):
+    """Resource limits on a process.
+
+    Attributes:
+
+    * address_space: Address space limit in bytes
+    * number_files: Maximum number of open files.
+    * resident_set_size: Maximum Resident Set Size (RSS) in bytes
+
+    This object can be used for the *prlimit* parameter of :func:`execute`.
+    """
+
+    def __init__(self, **kw):
+        self.address_space = kw.pop('address_space', None)
+        self.number_files = kw.pop('number_files', None)
+        self.resident_set_size = kw.pop('resident_set_size', None)
+        if kw:
+            raise ValueError("invalid limits: %s"
+                             % ', '.join(sorted(kw.keys())))
+
+    def prlimit_args(self):
+        """Create a list of arguments for the prlimit command line."""
+        args = []
+        if self.address_space:
+            args.append('--as=%s' % self.address_space)
+        if self.number_files:
+            args.append('--nofile=%s' % self.number_files)
+        if self.resident_set_size:
+            args.append('--rss=%s' % self.resident_set_size)
+        return args
 
 
 def execute(*cmd, **kwargs):
@@ -188,11 +228,21 @@ def execute(*cmd, **kwargs):
                             subprocess.Popen on windows (throws a
                             ValueError)
     :type preexec_fn:       function()
+    :param prlimit:         Set resource limits on the child process. See
+                            below for a detailed description.
+    :type prlimit:          :class:`ProcessLimits`
     :returns:               (stdout, stderr) from process execution
     :raises:                :class:`UnknownArgumentError` on
                             receiving unknown arguments
     :raises:                :class:`ProcessExecutionError`
     :raises:                :class:`OSError`
+
+    The *prlimit* parameter can be used to set resource limits on the child
+    process.  If this parameter is used, the child process will be spawned by a
+    wrapper process which will set limits before spawning the command.
+
+    .. versionchanged:: 3.4
+       Added *prlimit* optional parameter.
 
     .. versionchanged:: 1.5
        Added *cwd* optional parameter.
@@ -227,6 +277,7 @@ def execute(*cmd, **kwargs):
     on_execute = kwargs.pop('on_execute', None)
     on_completion = kwargs.pop('on_completion', None)
     preexec_fn = kwargs.pop('preexec_fn', None)
+    prlimit = kwargs.pop('prlimit', None)
 
     if isinstance(check_exit_code, bool):
         ignore_exit_code = not check_exit_code
@@ -256,6 +307,14 @@ def execute(*cmd, **kwargs):
             cmd = shlex.split(root_helper) + list(cmd)
 
     cmd = [str(c) for c in cmd]
+
+    if prlimit:
+        args = [sys.executable, '-m', 'oslo_concurrency.prlimit']
+        args.extend(prlimit.prlimit_args())
+        args.append('--')
+        args.extend(cmd)
+        cmd = args
+
     sanitized_cmd = strutils.mask_password(' '.join(cmd))
 
     watch = timeutils.StopWatch()
