@@ -1,0 +1,57 @@
+From 5021ef82fd8f0323b82d6d010bff9dab8a0cbcec Mon Sep 17 00:00:00 2001
+From: "Sean M. Collins" <sean@coreitpro.com>
+Date: Wed, 24 Feb 2016 16:25:52 -0500
+Subject: [PATCH] Use tempfile.tempdir for lock_path if OSLO_LOCK_PATH is not
+ set
+
+DevStack spends a lot of time setting lock_path in a bunch of
+locations.
+
+http://codesearch.openstack.org/?q=oslo_concurrency%20lock_path&i=nope&files=&repos=
+
+The default for lock_path is an environment variable
+OSLO_LOCK_PATH.
+
+http://codesearch.openstack.org/?q=OSLO_LOCK_PATH&i=nope&files=&repos=
+
+Since the default is to consult an environment variable, which may not
+even be set, this means that really there is no default. If you do
+not set it - you end up getting errors like:
+
+http://paste.openstack.org/show/488108/
+
+Ideally - a library should have a reasonable default, where if a user
+doesn't set something, the default will at least work. So, let's use
+Python's built in tempfile module, which has fairly complex rules for
+determining a sane directory to place temporary items in.
+
+https://docs.python.org/2/library/tempfile.html#tempfile.tempdir
+
+Change-Id: I6906af43bc0255cd215f2d9584ea000c81f5880e
+---
+ oslo_concurrency/lockutils.py | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/oslo_concurrency/lockutils.py b/oslo_concurrency/lockutils.py
+index 2e61ff3..227af59 100644
+--- a/oslo_concurrency/lockutils.py
++++ b/oslo_concurrency/lockutils.py
+@@ -41,11 +41,14 @@ _opts = [
+                 help='Enables or disables inter-process locks.',
+                 deprecated_group='DEFAULT'),
+     cfg.StrOpt('lock_path',
+-               default=os.environ.get("OSLO_LOCK_PATH"),
++               default=os.environ.get("OSLO_LOCK_PATH", tempfile.gettempdir()),
+                help='Directory to use for lock files.  For security, the '
+                     'specified directory should only be writable by the user '
+                     'running the processes that need locking. '
+                     'Defaults to environment variable OSLO_LOCK_PATH. '
++                    'If OSLO_LOCK_PATH is not set in the environment, use the '
++                    'Python tempfile.gettempdir function to find a suitable '
++                    'location. '
+                     'If external locks are used, a lock path must be set.',
+                deprecated_group='DEFAULT')
+ ]
+-- 
+2.7.0
+
