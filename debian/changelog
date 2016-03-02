@@ -9,7 +9,10 @@ python-oslo.concurrency (3.6.0-1) UNRELEASED; urgency=medium
   * d/p/lock-path-tempfile.patch: Cherry picked from upstream to set default
     of lock_file to a tempfile if OSLO_LOCK_PATH isn't set (LP: #1550188).
 
- -- Corey Bryant <corey.bryant@canonical.com>  Tue, 01 Mar 2016 09:27:04 -0500
+  [ Thomas Goirand ]
+  * Fixed debian/copyright ordering.
+
+ -- Thomas Goirand <zigo@debian.org>  Wed, 02 Mar 2016 10:45:58 +0000
 
 python-oslo.concurrency (3.3.0-1) experimental; urgency=medium
 
