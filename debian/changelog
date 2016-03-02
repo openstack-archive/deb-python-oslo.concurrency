@@ -1,4 +1,4 @@
-python-oslo.concurrency (3.6.0-1) UNRELEASED; urgency=medium
+python-oslo.concurrency (3.6.0-1) experimental; urgency=medium
 
   [ Ondřej Nový ]
   * Fixed VCS URLs (https).
@@ -11,6 +11,7 @@ python-oslo.concurrency (3.6.0-1) UNRELEASED; urgency=medium
 
   [ Thomas Goirand ]
   * Fixed debian/copyright ordering.
+  * Standards-Version: 3.9.7 (no change).
 
  -- Thomas Goirand <zigo@debian.org>  Wed, 02 Mar 2016 10:45:58 +0000
 
