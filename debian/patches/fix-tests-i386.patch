@@ -1,0 +1,18 @@
+Description: Strip long integer suffix from strings. A proper fix would be
+             more involved so I've opened a bug upstream.
+Bug: https://bugs.launchpad.net/bugs/1552690
+Author: Corey Bryant <corey.bryant@canonical.com>
+Forwarded: no
+
+--- a/oslo_concurrency/tests/unit/test_processutils.py
++++ b/oslo_concurrency/tests/unit/test_processutils.py
+@@ -784,7 +784,8 @@
+         args = [sys.executable, '-c', code]
+         stdout, stderr = processutils.execute(*args, prlimit=prlimit)
+         expected = (value, value)
+-        self.assertEqual(stdout.rstrip(), str(expected))
++        self.assertEqual(stdout.rstrip().replace('L',''),
++                         str(expected).replace('L',''))
+ 
+     def test_address_space(self):
+         prlimit = self.limit_address_space()
