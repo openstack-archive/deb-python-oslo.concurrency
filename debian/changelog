@@ -1,8 +1,12 @@
-python-oslo.concurrency (3.6.0-2) UNRELEASED; urgency=medium
+python-oslo.concurrency (3.7.0-1) experimental; urgency=medium
 
+  [ Corey Bryant ]
   * d/p/fix-tests-i386.patch: Fix tests that fail on i386 builds.
 
- -- Corey Bryant <corey.bryant@canonical.com>  Thu, 03 Mar 2016 09:05:39 -0500
+  [ Thomas Goirand ]
+  * New upstream release.
+
+ -- Thomas Goirand <zigo@debian.org>  Sat, 02 Apr 2016 14:17:31 +0200
 
 python-oslo.concurrency (3.6.0-1) experimental; urgency=medium
 
