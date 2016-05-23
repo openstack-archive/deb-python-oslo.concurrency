@@ -1,7 +1,12 @@
-python-oslo.concurrency (3.7.0-3) UNRELEASED; urgency=medium
+python-oslo.concurrency (3.8.0-1) UNRELEASED; urgency=medium
 
+  [ Ondřej Nový ]
   * Standards-Version is 3.9.8 now (no change)
   * d/rules: Changed UPSTREAM_GIT protocol to https
+
+  [ James Page ]
+  * New upstream release.
+  * d/control: Align (Build-)Depends with upstream
 
  -- Ondřej Nový <novy@ondrej.org>  Sat, 09 Apr 2016 19:28:50 +0200
 
