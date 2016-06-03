@@ -1,4 +1,4 @@
-python-oslo.concurrency (3.9.0-1) UNRELEASED; urgency=medium
+python-oslo.concurrency (3.9.0-1) experimental; urgency=medium
 
   [ Ondřej Nový ]
   * Standards-Version is 3.9.8 now (no change)
@@ -11,7 +11,10 @@ python-oslo.concurrency (3.9.0-1) UNRELEASED; urgency=medium
   [ Corey Bryant ]
   * New upstream release.
 
- -- Corey Bryant <corey.bryant@canonical.com>  Tue, 31 May 2016 16:24:27 -0400
+  [ Thomas Goirand ]
+  * Added Corey Bryant as Uploaders.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 03 Jun 2016 12:48:36 +0000
 
 python-oslo.concurrency (3.7.0-2) unstable; urgency=medium
 
