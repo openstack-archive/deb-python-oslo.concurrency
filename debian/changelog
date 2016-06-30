@@ -1,6 +1,7 @@
 python-oslo.concurrency (3.11.0-1) UNRELEASED; urgency=medium
 
   * New upstream release for OpenStack Newston.
+  * d/control: Align (build-)depends with upstream.
 
  -- David Della Vecchia <ddv@canonical.com>  Thu, 30 Jun 2016 10:32:24 -0400
 
