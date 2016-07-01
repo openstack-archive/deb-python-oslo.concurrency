@@ -107,33 +107,3 @@ Description: oslo.concurrency library - doc
  locks within OpenStack projects.
  .
  This package contains the documentation.
-
-Package: python-oslo-concurrency
-Section: oldlibs
-Priority: extra
-Architecture: all
-Depends: python-oslo.concurrency,
-         ${misc:Depends},
-Description: transitional dummy package for python-oslo-concurrency
- This transitional package is safe to remove and use python-oslo.concurrency
- instead.
-
-Package: python-oslo-concurrency-doc
-Section: oldlibs
-Priority: extra
-Architecture: all
-Depends: python-oslo.concurrency-doc,
-         ${misc:Depends},
-Description: transitional dummy package for python-oslo-concurrency-doc
- This transitional package is safe to remove and use
- python-oslo.concurrency-doc instead.
-
-Package: python3-oslo-concurrency
-Section: oldlibs
-Priority: extra
-Architecture: all
-Depends: python3-oslo.concurrency,
-         ${misc:Depends},
-Description: transitional dummy package for python3-oslo-concurrency
- This transitional package is safe to remove and use python3-oslo.concurrency
- instead.

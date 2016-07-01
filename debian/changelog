@@ -6,6 +6,7 @@ python-oslo.concurrency (3.11.0-1) experimental; urgency=medium
 
   [ Thomas Goirand ]
   * Switch to openstack-pkg-tools pkgos-dh_auto_{test,install}.
+  * Drop python-oslo- binary packages (not needed for Ubuntu anymore).
 
  -- Thomas Goirand <zigo@debian.org>  Fri, 01 Jul 2016 13:51:01 +0000
 
