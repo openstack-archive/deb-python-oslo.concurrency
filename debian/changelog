@@ -1,9 +1,13 @@
-python-oslo.concurrency (3.11.0-1) UNRELEASED; urgency=medium
+python-oslo.concurrency (3.11.0-1) experimental; urgency=medium
 
+  [ David Della Vecchia ]
   * New upstream release.
   * d/control: Align (build-)depends with upstream.
 
- -- David Della Vecchia <ddv@canonical.com>  Thu, 30 Jun 2016 10:32:24 -0400
+  [ Thomas Goirand ]
+  * Switch to openstack-pkg-tools pkgos-dh_auto_{test,install}.
+
+ -- Thomas Goirand <zigo@debian.org>  Fri, 01 Jul 2016 13:51:01 +0000
 
 python-oslo.concurrency (3.9.0-1) experimental; urgency=medium
 
