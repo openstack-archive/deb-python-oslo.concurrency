@@ -1,3 +1,11 @@
+python-oslo.concurrency (3.14.0-1) experimental; urgency=medium
+
+  * New upstream release.
+  * d/control: Align (build-)depends with upstream.
+  * d/p/fix-tests-i386.patch: Rebased.
+
+ -- Corey Bryant <corey.bryant@canonical.com>  Thu, 25 Aug 2016 08:10:15 +0100
+
 python-oslo.concurrency (3.11.0-1) experimental; urgency=medium
 
   [ David Della Vecchia ]
