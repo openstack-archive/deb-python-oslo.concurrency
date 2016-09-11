@@ -13,7 +13,7 @@
 #    under the License.
 
 import collections
-import fcntl
+import multiprocessing
 import os
 import shutil
 import signal
@@ -31,6 +31,50 @@ from oslo_concurrency.fixture import lockutils as fixtures
 from oslo_concurrency import lockutils
 from oslo_config import fixture as config
 
+if sys.platform == 'win32':
+    import msvcrt
+else:
+    import fcntl
+
+
+def lock_file(handle):
+    if sys.platform == 'win32':
+        msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+    else:
+        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+
+def unlock_file(handle):
+    if sys.platform == 'win32':
+        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+    else:
+        fcntl.flock(handle, fcntl.LOCK_UN)
+
+
+def lock_files(handles_dir, out_queue):
+    with lockutils.lock('external', 'test-', external=True):
+        # Open some files we can use for locking
+        handles = []
+        for n in range(50):
+            path = os.path.join(handles_dir, ('file-%s' % n))
+            handles.append(open(path, 'w'))
+
+        # Loop over all the handles and try locking the file
+        # without blocking, keep a count of how many files we
+        # were able to lock and then unlock. If the lock fails
+        # we get an IOError and bail out with bad exit code
+        count = 0
+        for handle in handles:
+            try:
+                lock_file(handle)
+                count += 1
+                unlock_file(handle)
+            except IOError:
+                os._exit(2)
+            finally:
+                handle.close()
+        return out_queue.put(count)
+
 
 class LockTestCase(test_base.BaseTestCase):
 
@@ -44,9 +88,9 @@ class LockTestCase(test_base.BaseTestCase):
             """Bar."""
             pass
 
-        self.assertEqual(foo.__doc__, 'Bar.', "Wrapped function's docstring "
+        self.assertEqual('Bar.', foo.__doc__, "Wrapped function's docstring "
                                               "got lost")
-        self.assertEqual(foo.__name__, 'foo', "Wrapped function's name "
+        self.assertEqual('foo', foo.__name__, "Wrapped function's name "
                                               "got mangled")
 
     def test_lock_internally_different_collections(self):
@@ -92,7 +136,7 @@ class LockTestCase(test_base.BaseTestCase):
         for thread in threads:
             thread.join()
 
-        self.assertEqual(len(seen_threads), 100)
+        self.assertEqual(100, len(seen_threads))
         # Looking at the seen threads, split it into chunks of 10, and verify
         # that the last 9 match the first in each chunk.
         for i in range(10):
@@ -126,51 +170,20 @@ class LockTestCase(test_base.BaseTestCase):
 
     def _do_test_lock_externally(self):
         """We can lock across multiple processes."""
-
-        def lock_files(handles_dir):
-
-            with lockutils.lock('external', 'test-', external=True):
-                # Open some files we can use for locking
-                handles = []
-                for n in range(50):
-                    path = os.path.join(handles_dir, ('file-%s' % n))
-                    handles.append(open(path, 'w'))
-
-                # Loop over all the handles and try locking the file
-                # without blocking, keep a count of how many files we
-                # were able to lock and then unlock. If the lock fails
-                # we get an IOError and bail out with bad exit code
-                count = 0
-                for handle in handles:
-                    try:
-                        fcntl.flock(handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                        count += 1
-                        fcntl.flock(handle, fcntl.LOCK_UN)
-                    except IOError:
-                        os._exit(2)
-                    finally:
-                        handle.close()
-
-                # Check if we were able to open all files
-                self.assertEqual(50, count)
-
         handles_dir = tempfile.mkdtemp()
         try:
             children = []
             for n in range(50):
-                pid = os.fork()
-                if pid:
-                    children.append(pid)
-                else:
-                    try:
-                        lock_files(handles_dir)
-                    finally:
-                        os._exit(0)
-
-            for child in children:
-                (pid, status) = os.waitpid(child, 0)
-                if pid:
-                    self.assertEqual(0, status)
+                queue = multiprocessing.Queue()
+                proc = multiprocessing.Process(
+                    target=lock_files,
+                    args=(handles_dir, queue))
+                proc.start()
+                children.append((proc, queue))
+            for child, queue in children:
+                child.join()
+                count = queue.get(block=False)
+                self.assertEqual(50, count)
         finally:
             if os.path.exists(handles_dir):
                 shutil.rmtree(handles_dir, ignore_errors=True)
@@ -336,7 +349,7 @@ class LockTestCase(test_base.BaseTestCase):
         conf = cfg.ConfigOpts()
         conf(['--config-file', paths[0]])
         conf.register_opts(lockutils._opts, 'oslo_concurrency')
-        self.assertEqual(conf.oslo_concurrency.lock_path, 'foo')
+        self.assertEqual('foo', conf.oslo_concurrency.lock_path)
         self.assertTrue(conf.oslo_concurrency.disable_process_locking)
 
 
@@ -436,7 +449,7 @@ class FileBasedLockingTestCase(test_base.BaseTestCase):
         thread1.start()
         thread1.join()
         thread.join()
-        self.assertEqual(call_list, ['other', 'other', 'main', 'main'])
+        self.assertEqual(['other', 'other', 'main', 'main'], call_list)
 
     def test_non_destructive(self):
         lock_file = os.path.join(self.lock_dir, 'not-destroyed')
@@ -445,7 +458,7 @@ class FileBasedLockingTestCase(test_base.BaseTestCase):
         with lockutils.lock('not-destroyed', external=True,
                             lock_path=self.lock_dir):
             with open(lock_file) as f:
-                self.assertEqual(f.read(), 'test')
+                self.assertEqual('test', f.read())
 
 
 class LockutilsModuleTestCase(test_base.BaseTestCase):
@@ -470,7 +483,7 @@ class LockutilsModuleTestCase(test_base.BaseTestCase):
         ])
         argv = ['', sys.executable, '-c', script]
         retval = lockutils._lock_wrapper(argv)
-        self.assertEqual(retval, 0, "Bad OSLO_LOCK_PATH has been set")
+        self.assertEqual(0, retval, "Bad OSLO_LOCK_PATH has been set")
 
     def test_return_value_maintained(self):
         script = '\n'.join([
@@ -479,7 +492,7 @@ class LockutilsModuleTestCase(test_base.BaseTestCase):
         ])
         argv = ['', sys.executable, '-c', script]
         retval = lockutils._lock_wrapper(argv)
-        self.assertEqual(retval, 1)
+        self.assertEqual(1, retval)
 
     def test_direct_call_explodes(self):
         cmd = [sys.executable, '-m', 'oslo_concurrency.lockutils']
