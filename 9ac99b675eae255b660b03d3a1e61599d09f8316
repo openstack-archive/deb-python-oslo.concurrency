@@ -1,0 +1,8 @@
+Code-Review+2: Victor Stinner <vstinner@redhat.com>
+Workflow+1: Victor Stinner <vstinner@redhat.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Tue, 04 Oct 2016 15:42:56 +0000
+Reviewed-on: https://review.openstack.org/381243
+Project: openstack/deb-python-oslo.concurrency
+Branch: refs/heads/stable/newton
