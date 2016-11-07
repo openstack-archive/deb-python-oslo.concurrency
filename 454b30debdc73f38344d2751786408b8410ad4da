@@ -1,0 +1,10 @@
+Code-Review+2: Gevorg Davoian <gdavoian@mirantis.com>
+Code-Review+1: venkatamahesh <Venkata.Kotha@infinite.com>
+Code-Review+2: Yuriy Taraday <yorik.sar@gmail.com>
+Workflow+1: Yuriy Taraday <yorik.sar@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Mon, 07 Nov 2016 13:23:51 +0000
+Reviewed-on: https://review.openstack.org/394107
+Project: openstack/deb-python-oslo.concurrency
+Branch: refs/heads/master
