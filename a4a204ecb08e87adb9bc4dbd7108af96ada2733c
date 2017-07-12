@@ -1,0 +1,8 @@
+Code-Review+2: Yuriy Taraday <yorik.sar@gmail.com>
+Workflow+1: Yuriy Taraday <yorik.sar@gmail.com>
+Verified+2: Jenkins
+Submitted-by: Jenkins
+Submitted-at: Wed, 12 Jul 2017 18:02:14 +0000
+Reviewed-on: https://review.openstack.org/482740
+Project: openstack/deb-python-oslo.concurrency
+Branch: refs/heads/master
